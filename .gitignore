@@ -1,0 +1,10 @@
+.build*
+.DS_Store
+static/css/
+*.pyc
+.idea/
+venv/
+media/
+npm/
+node_modules
+local_settings.py

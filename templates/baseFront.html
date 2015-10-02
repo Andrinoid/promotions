@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Pipar kynningar</title>
+    <meta charset="utf-8">
+
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+    <link rel="stylesheet" href="/static/lib/revealjs/css/reveal.css">
+    <link rel="stylesheet" href="/static/lib/revealjs/css/theme/black.css" id="theme">
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="/static/lib/revealjs/lib/css/zenburn.css">
+    <!-- CSS -->
+    {% comment %}
+    <link rel="stylesheet" href="/static/css/jquery-ui/jquery-ui.css">
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/slides.css">
+    <link rel="stylesheet" href="/static/css/addpromotion.css">
+    <link rel="stylesheet" href="/static/css/popover.css">
+
+    <link rel="stylesheet" href="/static/lib/ionicicons/css/ionicons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+    {% endcomment %}
+    <!-- Scripts -->
+    {% comment %}
+    <script src="/static/lib/jquery.js"></script>
+    <script src="/static/lib/cookies.js"></script>
+    <script src="/static/lib/jquery-ui.js"></script>
+    <script src="/static/lib/knockout-3.3.0.js"></script>
+    <script src="/static/lib/inline.js"></script>
+    <script src="/static/lib/lodash.js"></script>
+    <script src="/static/lib/chainwork.js"></script>
+    <script src="/static/lib/chainwork-components.js"></script>
+
+    <script src="/static/js/base.js"></script>
+    {% endcomment %}
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? '/static/lib/revealjs/css/print/pdf.css' : '/static/lib/revealjs/css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+    <!--[if lt IE 9]>
+		<script src="/static/lib/revealjs/lib/html5shiv.js"></script>
+	<![endif]-->
+</head>
+
+<body>
+{% block content %}{% endblock content %}
+<script src="/static/lib/revealjs/lib/head.min.js"></script>
+<script src="/static/lib/revealjs/js/reveal.js"></script>
+<script>
+
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [
+            {
+                src: '/static/lib/revealjs/lib/classList.js', condition: function () {
+                    return !document.body.classList;
+                }
+            },
+            {
+                src: '/static/lib/revealjs/plugin/markdown/marked.js', condition: function () {
+                    return !!document.querySelector('[data-markdown]');
+                }
+            },
+            {
+                src: '/static/lib/revealjs/plugin/markdown/markdown.js', condition: function () {
+                    return !!document.querySelector('[data-markdown]');
+                }
+            },
+            {
+                src: '/static/lib/revealjs/plugin/highlight/highlight.js', async: true, condition: function () {
+                    return !!document.querySelector('pre code');
+                }, callback: function () {
+                    hljs.initHighlightingOnLoad();
+                }
+            },
+            {src: '/static/lib/revealjs/plugin/zoom-js/zoom.js', async: true},
+            {src: '/static/lib/revealjs/plugin/notes/notes.js', async: true}
+        ]
+    });
+
+</script>
+</body>
+
+</html>

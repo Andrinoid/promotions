@@ -1,0 +1,58 @@
+<div class="header">
+    <div class="clearfix">
+        <a class="header-logo" href="/">
+            <img src="/static/images/logo.png" width="127" height="47">
+        </a>
+        <div class="header-actions">
+            <!-- <a class="btn btn-primary" href="/addPromotion">Bæta við kynningu</a> -->
+            <div class="btn btn-primary addOptions">Bæta við kynningu</div>
+            <a class="btn" href="/logout">Útskrá</a>
+        </div>
+        <form accept-charset="UTF-8" action="/search" method="get">
+            <input type="text" placeholder="Leita" autocapitalize="off">
+        </form>
+    </div>
+
+    <div class="popOver addOptionsDialog">
+        <div class="content">
+            <p class="label">Bæta við kynningu</p>
+        </div>
+        <div class="content">
+            <form accept-charset="UTF-8" action="/api/addPromotion/">
+                <label for="promoName">Nafn kynningar</label>
+                <input class="input-block" type="text" autofocus="autofocus" id="promoName" name="name" placeholder="T.d Dan kynning">
+                <div class="push-up">
+                    <button class="btn btn-primary createPromoBtn">Stofna</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    new Popover('.addOptionsDialog', '.addOptions');
+
+
+    var inline = new Inline({djangoCSRF: true});
+    var data = {};
+    //Events
+    $('.addOptionsDialog form').submit(function(event) {
+        event.preventDefault();
+        data = {};
+        data.name = event.originalEvent.target.name.value;
+        data.is_active = true;
+        data.is_private = true;
+        addPromotion(data);
+    });
+
+    var addPromotion = function(data) {
+        var future = inline.get('/api/addPromotion', data).apply(inline.log);
+        inline.run(function() {
+            if(future.data.success) {
+                data.promotionID = future.data.promotionID;
+                window.location = '/promotion/' + future.data.promotionID;
+            }
+        });
+    }
+</script>

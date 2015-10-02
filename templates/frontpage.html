@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Pipar kynningar</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1" media="(device-height: 568px)">
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/css/jquery-ui/jquery-ui.css">
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/frontpage.css">
+    <!-- Scripts -->
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/js/jquery-ui.js"></script>
+    <script src="/static/js/knockout-3.3.0.js"></script>
+</head>
+
+<body>
+    <div class="frontpage">
+        <div class="authframe">
+            <form accept-charset="UTF-8" action="/login/" method="post">
+
+                <div style="margin:0;padding:0;display:inline">
+                    <input name="utf8" type="hidden" value="✓">
+                	{% csrf_token %}
+                </div>
+                <div class="auth-form-header">
+                    <h1>PIPAR\TBWA Kynningar</h1>
+                </div>
+                <div class="auth-form-body">
+                    <label for="login_field">
+                        Netfang
+                    </label>
+                    <input autocapitalize="off" autocorrect="off" autofocus="autofocus" class="input-block" id="login_field" name="username" tabindex="1" type="text">
+                    <label for="password">
+                        Lykilorð <a href="/password_reset">(gleymt lykilorð)</a>
+                    </label>
+                    <input class="input-block" id="password" name="password" tabindex="2" type="password">
+                    <input class="btn" data-disable-with="Signing in…" name="commit" tabindex="3" type="submit" value="Sign in">
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

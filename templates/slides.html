@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="slides">
+        <div class="container">
+         	<div class="overview">
+         	{% for promo in promotions %}
+         	<!-- <a href="/promotion/{{ promo.pk }}"> -->
+			    <div class="promoRow push-up" data-promoID="{{ promo.pk }}">
+			    	<div class="clearfix">
+			    		<div class="ion-ios-gear settingsBtn"></div>
+				    	<a href="/promotion/{{ promo.pk }}">
+					      	<div class="thumb" style="background-image: url({{ promo.thumb }})"></div>
+					    </a>
+				      	<div class="content">
+				      		<a href="/promotion/{{ promo.pk }}"><h2>{{ promo.name }}</h2></a>
+				      		<p class="user">{{ request.user.username }}</p>
+				      	</div>
+			      	</div>
+
+			    </div>
+			<!-- </a> -->
+			{% endfor %}
+		  	</div>
+        </div>
+
+        <div class="popOver promoSettingsDialog">
+	        <div class="content">
+	            <p class="label">Bæta við kynningu</p>
+	        </div>
+	        <div class="content">
+	            <form accept-charset="UTF-8" action="/api/addPromotion/">
+	                <label for="promoName">Nafn kynningar</label>
+	                <input class="input-block" type="text" autofocus="autofocus" id="promoName" name="name" placeholder="T.d Dan kynning">
+	                <div class="push-up">
+	                    <button class="btn btn-primary createPromoBtn">Stofna</button>
+	                </div>
+	            </form>
+	        </div>
+	    </div>
+    </div>
+
+    <script>
+    new Popover('.promoSettingsDialog', '.settingsBtn', {multiTriggers: true});
+    </script>
+{% endblock content %}

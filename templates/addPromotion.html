@@ -1,0 +1,419 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="slideLeftMenu">
+        <div class="addSlide">
+            <span class="icon ion-ios-plus-empty"></span>
+
+            <div>Bæta við</div>
+        </div>
+        <div class="slideThumbs">
+        </div>
+
+    </div>
+
+    {% include "slideAddMenu.html" %}
+
+    <div class="slideSimBg">
+        <button class="btn btn-primary submitContent">Áfram</button>
+        <div class="bg"></div>
+        <div class="container inFront">
+
+
+            <div class="slidePad" id="droppad">
+                <!-- <input type="file"> Bug sem þarf að fixa-->
+                <p>Dragðu mynd</p>
+            </div>
+            <div class="textPad">
+                <div class="columns">
+                    <div class="reveal">
+                        <h1 class="editable" contenteditable="true"></h1>
+
+                        <h2 class="editable" contenteditable="true"></h2>
+
+                        <p class="editable" contenteditable="true"></p>
+                    </div>
+                    {% comment %}
+                    <div class="one-half column">
+                        <form class="slideContent">
+                            <input class="input-block input-ghost" id="hl1" name="hl1" type="text">
+                            <input class="input-block input-ghost" id="hl2" name="hl2" type="text">
+                            <input class="input-block input-ghost" id="description" name="description" type="text">
+                            <input class="matrixCube" name="matrixCube" type="hidden" value="5">
+                        </form>
+                    </div>
+                    <div class="one-half column">
+
+                        <div class="cubeMatrix">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div class="active"></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                    </div>
+                    {% endcomment %}
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <script type="text/html" id="thumbTmpl">
+        <div class="thumb" data-id="<%- slideData.id %>">
+            <div class="actions">
+                <% if (slideData.is_active) { %>
+                <div class="ion-eye hide" data-id="<%- slideData.id %>"></div>
+                <% } else { %>
+                <div class="ion-eye-disabled hide" data-id="<%- slideData.id %>"></div>
+                <% } %>
+                <div class="ion-android-create edit" data-id="<%- slideData.id %>"></div>
+                <div class="ion-trash-a remove" data-id="<%- slideData.id %>"></div>
+            </div>
+            <div class="thumbImage" style="background-image: url( <%- slideData.image %> );">
+                <% if (slideData.is_active) { %>
+                <div class="inActive hidden"></div>
+                <% } else { %>
+                <div class="inActive"></div>
+                <% } %>
+            </div>
+        </div>
+    </script>
+    <script>
+
+        //matrix directive
+        var Matrix = (function () {
+            function Matrix() {
+                var self = this;
+                this.matrixCube = $('.cubeMatrix');
+                this.cubes = $('.cubeMatrix div');
+                this.cubes.on('click', function () {
+                    self.set(this);
+                });
+            }
+
+            Matrix.prototype.set = function (cube) {
+                if (typeOf(cube) !== 'element') {
+                    cube = this.cubes[cube - 1];
+                }
+                this.cubes.removeClass('active');
+                $(cube).addClass('active');
+                $('input.matrixCube').val($(cube).index() + 1);
+            }
+
+            return Matrix;
+        })();
+
+        //thumbDirective
+        var Thumb = (function () {
+            function Thumb(data) {
+                var self = this;
+                this.parent = $('.slideThumbs');
+                var template = document.getElementById('thumbTmpl').innerHTML;
+                var compiler = _.template(template);
+                this.dom = $(compiler(data));
+                this.dom.find('.actions .remove').on('click', function (e) {
+                    var slideID = $(e.target).data('id');
+                    self.remove(slideID);
+                });
+                this.dom.find('.actions .hide').on('click', function () {
+                    var sheet = self.dom.find('.inActive');
+                    var id = $(this).data('id');
+                    if (sheet.hasClass('hidden')) {
+                        self.hide(id);
+                    }
+                    else {
+                        self.show(id);
+                    }
+                });
+                this.dom.find('.actions .edit').on('click', function () {
+                    var id = $(this).data('id');
+                    $('.slideThumbs .thumb').removeClass('active');
+                    $(this).closest('.thumb').addClass('active');
+                    console.log($(this).closest('.thumb'));
+                    self.edit(id);
+                });
+
+                this.parent.prepend(this.dom);
+            }
+
+            Thumb.prototype.remove = function (slideID) {
+                var self = this;
+                var future = inline.get('/api/removeSlide', {slideID: slideID}).apply(inline.log);
+                inline.run(function () {
+                    if (future.data.success) {
+                        self.dom.remove();
+                        slideController.reset();
+                    }
+                });
+            }
+
+            Thumb.prototype.edit = function (slideID) {
+                var self = this;
+                slideController.loadSlide(slideID)
+            }
+
+            Thumb.prototype.hide = function (slideID) {
+                var self = this;
+                var future = inline.get('/api/hideSlide', {slideID: slideID});
+                inline.run(function () {
+                    if (future.data.success) {
+                        self.dom.find('.inActive').removeClass('hidden');
+                        self.dom.find('.hide').removeClass('ion-eye').addClass('ion-eye-disabled');
+                    }
+                });
+            }
+
+            Thumb.prototype.show = function (slideID) {
+                self = this;
+                var future = inline.get('/api/showSlide', {slideID: slideID});
+                inline.run(function () {
+                    if (future.data.success) {
+                        self.dom.find('.inActive').addClass('hidden');
+                        self.dom.find('.hide').removeClass('ion-eye-disabled').addClass('ion-eye');
+                    }
+                });
+            }
+            return Thumb;
+        })();
+
+        var SlideContent = (function () {
+            //Handles the collection and submition of slide content data
+            function SlideContent() {
+            }
+
+            SlideContent.prototype.updateSlide = function (id) {
+                this.collectData();
+                this.submitData();
+            }
+
+            SlideContent.prototype.collectData = function (cube) {
+                var data = {};
+                data['hl1'] = $('.reveal h1').text();
+                data['hl2'] = $('.reveal h2').text();
+                data['description'] = $('.reveal p').text();
+                data['matrixCube'] = 5;
+                slideController.set('slideContent', data);
+            }
+
+            SlideContent.prototype.submitData = function () {
+                var self = this;
+                var future = inline.body('/api/updateSlide/', slideController.constatns).apply(inline.log);
+                inline.run(function () {
+                    if (future.data.success) {
+                        self.clearForm();
+                        slideController.reset();
+                    }
+                });
+
+            }
+
+            SlideContent.prototype.clearForm = function () {
+                $('.slideContent input').val('');
+            }
+
+            SlideContent.prototype.fillForm = function (data) {
+                $('#hl1').val(data.headline);
+                $('#hl2').val(data.sub_headline);
+                $('#description').val(data.description);
+            }
+
+            return SlideContent;
+        })();
+
+        var DropPad = (function () {
+
+            function DropPad(elm) {
+                this.droppad = elm;
+                this.setEvents();
+            }
+
+            function onDrop(response) {
+                slideController.set('slideData', response.data);
+                slideController.setSlideBg();
+                slideController.newThumb();
+            }
+
+            DropPad.prototype.setEvents = function () {
+                this.droppad.ondragenter = function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    $(droppad).addClass('dragover');
+                }
+                this.droppad.ondragover = function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                }
+                this.droppad.ondragleave = function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    $(droppad).removeClass('dragover');
+                }
+                this.droppad.ondrop = function (e) {//ath að nota filereader til að lesa myndina strax http://html5demos.com/file-api
+                    e.stopPropagation();
+                    e.preventDefault();
+                    $(droppad).removeClass('dragover');
+                    var files = e.target.files || e.dataTransfer.files;
+                    var file = files[0];
+                    inline.upload('/api/addSlide/', file, {pk: slideController.get('promoID')})
+                            .apply(function (rsp) {
+                                onDrop(rsp)
+                            })
+                            .catch(function (rsp) {
+                                console.log(rsp)
+                            })
+                            .async();
+                }
+            }
+            return DropPad;
+        })();
+
+
+        var SlideController = (function () {
+            function SlideController() {
+                this.getSlides();
+                this.bindEvents();
+                this.matrix = new Matrix();
+                this.slideContent = new SlideContent();
+            }
+
+            SlideController.prototype.bindEvents = function () {
+                var self = this;
+                $('.submitContent').on('click', function () {
+                    self.slideContent.updateSlide();
+                })
+                $('.addSlide').on('click', function () {
+                    self.reset();
+                    self.slideContent.clearForm();
+                });
+                $('.slideThumbs').sortable({
+                    'update': function () {
+                        self.updateIndexList();
+                    },
+                    'start': function () {
+
+                    }
+                }).disableSelection();
+
+                new DropPad(document.getElementById('droppad'))
+
+            }
+
+            SlideController.prototype.updateIndexList = function () {
+                var slidesList = $('.slideThumbs .thumb').get().reverse();
+                var list = [];
+                _.forEach(slidesList, function (elm, i) {
+                    list.push([$(elm).data('id'), i]);
+                });
+                console.log(list);
+                var future = inline.body('/api/updateIndexList', {
+                    promoID: this.constatns.promoID,
+                    slideOrder: list
+                });
+            }
+
+            SlideController.prototype.constatns = {
+                'promoID': {{ promoID }},
+            }
+
+            SlideController.prototype.get = function (key) {
+                if (key in this.constatns && typeof this.constatns[key] !== 'undefined')
+                    return this.constatns[key];
+                return false;
+            }
+
+            SlideController.prototype.set = function (key, val) {
+                this.constatns[key] = val;
+            }
+
+            SlideController.prototype.extendData = function (obj) {
+                if (typeof(obj) !== 'object')
+                    return false;
+                _.extend(this.constatns, obj);
+            }
+
+
+            SlideController.prototype.setSlideBg = function () {
+                var self = this;
+                var image = self.get('slideData').image;
+                var chain = new ChainWork()
+                        .add('imagePreload', {
+                            images: [image],
+                            onEach: function (counter, percent) {
+                                console.log(counter, percent + '%');
+                            }
+                        })
+                        .call(function leafeDropState() {
+                            $('.slideSimBg .bg').css('background-image', 'url(' + image + ')').fadeIn(500);
+                            $('.slidePad').hide();
+                        })
+                        .add('pause', {delay: 500})
+                        .call(function enterHlState() {
+                            $('.textPad').fadeIn();
+                        });
+                chain.play();
+            }
+
+            SlideController.prototype.getSlides = function () {
+                var future = inline.body('/api/getSlides/', this.constatns).apply(inline.log);
+                inline.run(function () {
+                    if (future.data.success) {
+                        _.forEach(future.data.slides, function (itemData) {
+                            new Thumb({slideData: itemData})
+                        });
+                    }
+                });
+            }
+
+            SlideController.prototype.newThumb = function () {
+                new Thumb(this.constatns);
+            }
+
+            SlideController.prototype.reset = function () {
+                var self = this;
+                var chain = new ChainWork()
+                        .call(function leafeHlState() {
+                            $('.textPad').fadeOut(500);
+                            $('.slideSimBg .bg').fadeOut(500);
+                        })
+                        .add('pause', {delay: 500})
+                        .call(function enterDropState() {
+                            $('.slideSimBg').css('background-image', '');
+                            $('.slidePad').show();
+                        })
+                        .call(function clearActiveThumb() {
+                            $('.slideThumbs div').removeClass('active');
+                        })
+                        .call(function resetData() {
+                            self.constatns.slideData = {};
+                            self.constatns.slideContent = {};
+                        });
+                chain.play();
+            }
+
+            SlideController.prototype.loadSlide = function (id) {
+                var self = this;
+                var future = inline.get('/api/getSlide', {slideID: id});
+                inline.run(function () {
+                    var data = future.data.data;
+                    if (future.data.success) {
+                        self.set('slideData', data);
+                        self.setSlideBg();
+                        self.slideContent.fillForm(data);
+                        self.matrix.set(data.matrix);
+                    }
+                });
+            }
+
+
+            return SlideController;
+        })();
+        var slideController = new SlideController();
+
+
+    </script>
+{% endblock content %}
