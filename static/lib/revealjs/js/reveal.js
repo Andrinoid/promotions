@@ -1452,9 +1452,9 @@
 			dom.overlay.classList.add( 'overlay-help' );
 			dom.wrapper.appendChild( dom.overlay );
 
-			var html = '<p class="title">Keyboard Shortcuts</p><br/>';
+			var html = '<p class="title">Flýti skipanir</p><br/>';
 
-			html += '<table><th>KEY</th><th>ACTION</th>';
+			html += '<table><th>KEY</th><th>AÐGERÐ</th>';
 			for( var key in keyboardShortcuts ) {
 				html += '<tr><td>' + key + '</td><td>' + keyboardShortcuts[ key ] + '</td></tr>';
 			}

@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'^api/addPromotion/$', api_add_promotion),
     url(r'^api/addSlide/$', api_add_slide),
     url(r'^api/updateSlide/$', api_update_slide),
+    url(r'^api/updateSlideHtml/$', api_update_slide_html),
     url(r'^api/getSlides/$', api_get_slides),
     url(r'^api/getSlide$', api_get_slide),
     url(r'^api/removeSlide$', api_remove_slide),

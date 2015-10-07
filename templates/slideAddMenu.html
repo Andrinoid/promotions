@@ -40,40 +40,58 @@
     </svg>
 
     <script>
-        var SlideMenuController = (function() {
+        SlideMenuController = (function () {
             function SlideMenuController() {
                 var self = this;
-                $('.plusHl1').on('click', function() {
+                this.parent = $('.reveal');
+
+                $('.plusHl1').on('click', function () {
+                    if ($(this).hasClass('active'))
+                        return false;
                     self.addHeadline();
                 });
-                $('.plusHl2').on('click', function() {
+                $('.plusHl2').on('click', function () {
+                    if ($(this).hasClass('active'))
+                        return false;
                     self.addSubHeadline();
                 });
-                $('.plusHl2').on('click', function() {
-                    self.addSubHeadline();
-                });
-                $('.plusP').on('click', function() {
+                $('.plusP').on('click', function () {
+                    if ($(this).hasClass('active'))
+                        return false;
                     self.addParagraph();
                 });
             }
 
-            SlideMenuController.prototype.addHeadline = function() {
-                var elm = $('.reveal h1');
-                elm.text('Skrifaðu texta hér');
+            SlideMenuController.prototype.addHeadline = function () {
+                var elm = $('<div><h1 contenteditable="true" class="editable nosort">Lorem ipsum</h1></div>').prependTo($('.reveal'));
+                this.bindTools(elm);
                 elm.fadeIn('fast');
             }
 
-            SlideMenuController.prototype.addSubHeadline = function() {
-                var elm = $('.reveal h2');
-                elm.text('Skrifaðu meiri texta hér');
+            SlideMenuController.prototype.addSubHeadline = function () {
+                var elm = $('<div><h2 contenteditable="true" class="editable nosort">Lorem ipsum</h2></div>').prependTo($('.reveal'));
+                this.bindTools(elm);
                 elm.fadeIn('fast');
             }
 
-            SlideMenuController.prototype.addParagraph = function() {
-                var elm = $('.reveal p');
-                elm.text('Skrifaðu ennþá meiri texta hér');
+            SlideMenuController.prototype.addParagraph = function () {
+                var elm = $('<div><p contenteditable="true" class="editable nosort">Lorem ipsum</p></div>').prependTo($('.reveal'));
+                this.bindTools(elm);
                 elm.fadeIn('fast');
             }
+
+            SlideMenuController.prototype.bindTools = function(elm) {
+                var editable = elm.find('.editable');
+
+
+                editable.focus(function() {
+                   console.log('tools');
+                });
+                editable.blur(function() {
+                   console.log('no tools');
+                });
+            }
+
 
             return SlideMenuController;
         })();

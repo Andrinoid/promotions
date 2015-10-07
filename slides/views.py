@@ -223,6 +223,17 @@ def api_update_slide(request):
     }
     return HttpResponse(json.dumps(response), content_type='application/json')
 
+def api_update_slide_html(request):
+    slide_content = json.loads(request.body)['slideContent']
+    slide_data = json.loads(request.body)['slideData']
+    slide = Slide.objects.get(pk=slide_data['id'])
+    slide.html = slide_content['slideHTML']
+    slide.clean_html = slide_content['cleanHTML']
+    slide.save();
+    response = {
+        'success': True,
+    }
+    return HttpResponse(json.dumps(response), content_type='application/json')
 
 
 def api_update_indexlist(request):

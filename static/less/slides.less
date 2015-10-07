@@ -195,6 +195,7 @@
     }
     .container {
         margin-top: 40px;
+        height: 100%;
     }
 }
 .inFront {
@@ -241,9 +242,13 @@
 .textPad {
     @active: #d71316;
     width: 960px;
-    height: 700px;
+    height: 100%;
     margin: 0 auto;
     display: none;
+    .columns {
+        height: 100%;
+        width: 100%;
+    }
     .cubeMatrix {
         width: 200px;
         height: 200px;
@@ -322,14 +327,45 @@
     position: absolute;
     top: 20px;
     right: 15px;
-    z-index: 1;
-}
-.editable:focus {
-    outline: none;
+    z-index: 100;
 }
 
 .reveal {
+    top: 50%;
+    height: auto !important;
+    transform: translateY(-50%);
+    overflow: visible !important;
+    margin-top: -40px;
+    .editable {
+        margin: 0;
+    }
+    .editable:focus {
+        outline: none;
+        background: rgba(167, 200, 155, 0.36);
+    }
     > * {
         display: none;
+        border: dashed 1px #fff;
+    }
+    > div {
+            margin: 0 0 20px 0;
+    }
+    .nosort {
+        display: inline-block;
+    }
+    .highlight {
+        border: dashed 1px #fff;
+        background: rgba(167, 200, 155, 0.36);
+        position: relative;
+        z-index: 100;
+        display: block;
+    }
+    .placeholder {
+        background-color: #f3f3f3;
+         padding-right:10px;
+         padding-left:10px;
+         text-align:center;
+         width:50px;
+         height:60px;
     }
 }

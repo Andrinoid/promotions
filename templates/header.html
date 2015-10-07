@@ -8,9 +8,11 @@
             <div class="btn btn-primary addOptions">Bæta við kynningu</div>
             <a class="btn" href="/logout">Útskrá</a>
         </div>
-        <form accept-charset="UTF-8" action="/search" method="get">
+        <form accept-charset="UTF-8" action="/search" method="get" class="left">
             <input type="text" placeholder="Leita" autocapitalize="off">
         </form>
+        <button class="btn btn-outline left gotoPromo"><span class="ion-play"></span></button>
+
     </div>
 
     <div class="popOver addOptionsDialog">
@@ -55,4 +57,10 @@
             }
         });
     }
+
+    $('.gotoPromo').on('click', function() {
+        slideController.gotoPromo();
+    });
+
+
 </script>

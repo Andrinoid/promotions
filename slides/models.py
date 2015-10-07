@@ -25,6 +25,7 @@ class Slide(models.Model):
     sub_headline = models.CharField(max_length=250, blank=True)
     description = models.TextField(blank=True)
     html = models.TextField(blank=True)
+    clean_html = models.TextField(blank=True)
     matrix = models.IntegerField(default=5)
     link = models.CharField(max_length=250, blank=True)
     is_active = models.BooleanField(default=True)

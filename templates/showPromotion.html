@@ -11,12 +11,7 @@
                         data-background="{{ slide.image }}"
                         data-background-size="cover"
                         data-transition="zoom">
-                    <h1>{{ slide.headline }}</h1>
-
-                    <h3>{{ slide.sub_headline }}</h3>
-                    <p>
-                        <small>{{ slide.description }}</small>
-                    </p>
+                    {{ slide.clean_html | safe }}
                 </section>
             {% endfor %}
 
