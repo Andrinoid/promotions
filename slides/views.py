@@ -46,10 +46,10 @@ def slides(request):
     return render(request, 'slides.html', {'promotions': promotions})
 
 
-def promotion(request, promo_id):
+def promotion_editor(request, promo_id):
     promotion = Promotion.objects.get(pk=promo_id)
     slides = Slide.objects.filter(promotion=promotion)
-    return render(request, 'addPromotion.html', {'promoID': promo_id, 'slides': slides})
+    return render(request, 'promotionEditor.html', {'promoID': promo_id, 'slides': slides})
 
 
 def show_promotion(request, promo_id):

@@ -13,7 +13,7 @@ urlpatterns = [
     url(r'^login/$', login_user),
     url(r'^logout/$', logout_user),
     url(r'^slides/$', slides),
-    url(r'^promotion/(?P<promo_id>\d+)/$', promotion, name='promotion'),
+    url(r'^promotion/(?P<promo_id>\d+)/$', promotion_editor, name='promotion'),
     url(r'^slides/(?P<promo_id>\d+)/$', show_promotion, name='show promotion'),
     url(r'^slidesDemo/$', show_promotion_demo, name='show promotion demo'),
     url(r'^api/addPromotion/$', api_add_promotion),
